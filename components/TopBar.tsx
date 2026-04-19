@@ -6,7 +6,7 @@ export function TopBar({ activeTab, onTabChange }: { activeTab: string, onTabCha
   return (
     <header className="fixed top-0 w-full z-50 bg-[#111317]/70 backdrop-blur-xl bg-gradient-to-b from-[#1a1c20] to-transparent shadow-[0_4px_30px_rgba(183,196,255,0.06)] border-b border-white/5 md:border-none">
       <div className="flex justify-between items-center px-4 md:px-6 h-16 w-full max-w-7xl mx-auto">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => onTabChange('more')}>
           <img 
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkJ2y7J7PMfv3Qi9eqiqJ6AFCpN2KGYvcnXB8p66t-nIuR-ts5bDsXpkheC75bvBQXO_wg2K1iFao_U81x8NcZeU9RsKMSmR8eyul5bnziIqV6vkYnvI367G2kfmgoJXiBuWCOe-sYFEVl8Z5e9YYNn9FFaXp0ubbhB23MbiXl31ElNMcXNToRzoWbeBhgTCREtJIiKMX-tFByMPa1I99jYyboqvCJOKbvMNfTimz_b0Juy9w6M40lzM9mRs4YOt7xMc465DRtp4o" 
             alt="User avatar" 
@@ -24,7 +24,8 @@ export function TopBar({ activeTab, onTabChange }: { activeTab: string, onTabCha
             { id: 'home', label: 'Home' },
             { id: 'pick-team', label: 'Pick Team' },
             { id: 'scores', label: 'Scores' },
-            { id: 'leaderboard', label: 'Leaderboard' }
+            { id: 'leaderboard', label: 'Leaderboard' },
+            { id: 'more', label: 'Profile' }
           ].map((tab) => (
             <button
               key={tab.id}

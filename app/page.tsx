@@ -8,17 +8,27 @@ import { HomeTab } from '@/components/tabs/HomeTab';
 import { PickTeamTab } from '@/components/tabs/PickTeamTab';
 import { ScoresTab } from '@/components/tabs/ScoresTab';
 import { LeaderboardTab } from '@/components/tabs/LeaderboardTab';
+import { MoreTab } from '@/components/tabs/MoreTab';
+import { SignInView } from '@/components/SignInView';
+import { NoLeagueView } from '@/components/NoLeagueView';
 
-type TabType = 'home' | 'pick-team' | 'scores' | 'leaderboard';
+type TabType = 'home' | 'pick-team' | 'scores' | 'leaderboard' | 'more';
 
 export default function Page() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [hasLeague, setHasLeague] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('home');
 
+  if (!isAuthenticated) {
+    return <SignInView onSignIn={() => setIsAuthenticated(true)} />;
+  }
+
   const tabs = {
-    'home': <HomeTab />,
-    'pick-team': <PickTeamTab />,
-    'scores': <ScoresTab />,
-    'leaderboard': <LeaderboardTab />
+    'home': hasLeague ? <HomeTab /> : <NoLeagueView onJoinDummyLeague={() => setHasLeague(true)} />,
+    'pick-team': hasLeague ? <PickTeamTab /> : <NoLeagueView onJoinDummyLeague={() => setHasLeague(true)} />,
+    'scores': hasLeague ? <ScoresTab /> : <NoLeagueView onJoinDummyLeague={() => setHasLeague(true)} />,
+    'leaderboard': hasLeague ? <LeaderboardTab /> : <NoLeagueView onJoinDummyLeague={() => setHasLeague(true)} />,
+    'more': <MoreTab onSignOut={() => setIsAuthenticated(false)} />
   };
 
   return (
@@ -33,7 +43,7 @@ export default function Page() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="w-full"
+            className="w-full h-full"
           >
             {tabs[activeTab]}
           </motion.div>

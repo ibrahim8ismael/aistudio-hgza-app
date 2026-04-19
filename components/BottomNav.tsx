@@ -11,7 +11,7 @@ export function BottomNav({ activeTab, onTabChange }: { activeTab: string, onTab
   ];
 
   return (
-    <nav className="md:hidden bg-[#1e2024]/80 backdrop-blur-lg fixed bottom-0 w-full rounded-t-3xl z-50 shadow-[0_-8px_32px_rgba(0,0,0,0.5)]">
+    <nav className="md:hidden bg-[#1e2024]/80 backdrop-blur-lg fixed bottom-0 w-full rounded-t-3xl z-50 shadow-[0_-8px_32px_rgba(0,0,0,0.5)] border-t border-outline-variant/10">
       <div className="flex justify-around items-center px-4 pb-6 pt-3">
         {tabs.map(({ id, label, icon: Icon }) => {
           const isActive = activeTab === id;
@@ -28,8 +28,13 @@ export function BottomNav({ activeTab, onTabChange }: { activeTab: string, onTab
             </button>
           );
         })}
-        <button className="flex flex-col items-center justify-center text-slate-500 hover:text-primary transition-all group">
-          <Menu className="w-5 h-5 mb-1 group-active:translate-y-[2px]" />
+        <button 
+          onClick={() => onTabChange('more')}
+          className={`flex flex-col items-center justify-center transition-all duration-300 relative ${
+            activeTab === 'more' ? 'text-secondary bg-primary/10 rounded-xl px-3 py-1 -translate-y-1' : 'text-slate-500 hover:text-primary group'
+          }`}
+        >
+          <Menu className={`w-5 h-5 mb-1 ${activeTab !== 'more' && 'group-active:translate-y-[2px]'}`} />
           <span className="font-label text-[10px] font-semibold uppercase tracking-widest">More</span>
         </button>
       </div>

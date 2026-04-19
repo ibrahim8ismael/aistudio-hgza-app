@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { ArrowUpRight, ArrowDownRight, Users, Trophy, Shirt, CalendarDays, BarChart3 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowUpRight, ArrowDownRight, Users, Trophy, Shirt, CalendarDays, BarChart3, Clock } from 'lucide-react';
 import gsap from 'gsap';
 
 const scoredSquad = {
@@ -20,6 +20,7 @@ const scoredSquad = {
 
 export function HomeTab() {
   const pointsRef = useRef<HTMLDivElement>(null);
+  const [timeLeft, setTimeLeft] = useState({ days: 2, hours: 14, mins: 59, secs: 22 });
 
   useEffect(() => {
     let ctx = gsap.context(() => {
@@ -30,8 +31,25 @@ export function HomeTab() {
         );
       }
     });
-    return () => ctx.revert();
+
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        let { days, hours, mins, secs } = prev;
+        secs--;
+        if (secs < 0) { secs = 59; mins--; }
+        if (mins < 0) { mins = 59; hours--; }
+        if (hours < 0) { hours = 23; days--; }
+        return { days, hours, mins, secs };
+      });
+    }, 1000);
+
+    return () => {
+        ctx.revert();
+        clearInterval(timer);
+    }
   }, []);
+
+  const formatZero = (num: number) => num < 10 ? `0${num}` : num;
 
   const PlayerPointsCard = ({ player, isBench = false }: { player: any, isBench?: boolean }) => (
     <div className={`flex flex-col items-center relative w-[72px] md:w-[84px] ${isBench ? 'opacity-80' : ''}`}>
@@ -64,9 +82,14 @@ export function HomeTab() {
       <div className="flex items-center justify-between mt-2 md:mt-4 p-4 rounded-xl bg-surface-container-low border border-outline-variant/15">
         <button className="p-2 text-on-surface-variant hover:text-on-surface"><ArrowDownRight className="w-5 h-5 rotate-45" /></button>
         <div className="text-center">
-            <h2 className="font-label text-on-surface-variant text-xs uppercase tracking-widest font-bold mb-1">Points</h2>
-            <div className="font-headline text-xl md:text-2xl font-black text-on-surface uppercase tracking-tight flex items-center gap-2">
-                Round 1 <CalendarDays className="w-4 h-4 text-primary" />
+            <h2 className="font-label text-on-surface-variant text-xs uppercase tracking-widest font-bold mb-1 flex items-center gap-2 justify-center">
+               <Clock className="w-3 h-3 text-secondary"/> Next Round In
+            </h2>
+            <div className="font-headline text-xl md:text-2xl font-black text-on-surface uppercase tracking-tight flex items-center justify-center gap-1">
+                <span>{formatZero(timeLeft.days)}</span><span className="text-on-surface-variant mx-0.5">:</span>
+                <span>{formatZero(timeLeft.hours)}</span><span className="text-on-surface-variant mx-0.5">:</span>
+                <span>{formatZero(timeLeft.mins)}</span><span className="text-on-surface-variant mx-0.5">:</span>
+                <span className="text-secondary">{formatZero(timeLeft.secs)}</span>
             </div>
         </div>
         <button className="p-2 text-on-surface-variant hover:text-on-surface"><ArrowDownRight className="w-5 h-5 -rotate-[135deg]" /></button>
@@ -98,9 +121,9 @@ export function HomeTab() {
 
       {/* Rank Indicator */}
       <div className="flex justify-between items-center bg-surface-container rounded-lg p-3 md:p-4 border border-outline-variant/10">
-        <span className="font-label text-sm font-semibold uppercase tracking-wider">Overall Rank</span>
+        <span className="font-label text-sm font-semibold uppercase tracking-wider flex items-center gap-2"><CalendarDays className="w-4 h-4 text-primary"/> Round 1 Results</span>
         <div className="flex items-center gap-3">
-            <span className="font-headline font-black text-2xl text-on-surface">2</span>
+            <span className="font-headline font-black text-2xl text-on-surface">2<span className="text-sm text-on-surface-variant font-medium">nd</span></span>
             <span className="bg-secondary/20 text-secondary border border-secondary/30 px-2 py-0.5 rounded text-xs font-label font-bold flex items-center gap-1">
                 <ArrowUpRight className="w-3 h-3"/> 1
             </span>
